@@ -4,9 +4,28 @@ Static dashboard visualizing the Nsight data onboarding status across the EDF As
 
 ## Data
 
-`data/tracker.json` is a snapshot exported from `Data Onboarding Tracker.xlsx` (Onboarding Dashboard + Tracker sheets), enriched with technical-documentation file counts pulled from each project's `Technical Information` folder.
+`data/tracker.json` is exported from `Data Onboarding Tracker.xlsx` (Onboarding Dashboard + Tracker sheets), enriched with technical-documentation file counts pulled from each project's `Technical Information` folder.
 
-To refresh the dashboard after the tracker changes, re-export the sheets to `data/tracker.json` in the same shape and commit the update.
+### Refreshing the data
+
+Whenever the tracker workbook changes, regenerate the snapshot and push:
+
+```
+pip install -r scripts/requirements.txt
+python scripts/export_tracker.py
+git add data/tracker.json
+git commit -m "Refresh tracker data"
+git push
+```
+
+By default the script reads the workbook from its known OneDrive path and re-scans the
+`Technical Information` folders for documentation completeness. Override either location if needed:
+
+```
+python scripts/export_tracker.py --source "D:\path\to\Data Onboarding Tracker.xlsx" --assets-root "D:\path\to\Asset Operations - NSight"
+```
+
+Pushing the updated `data/tracker.json` triggers an automatic redeploy on Vercel.
 
 ## Run locally
 
