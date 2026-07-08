@@ -27,6 +27,31 @@ python scripts/export_tracker.py --source "D:\path\to\Data Onboarding Tracker.xl
 
 Pushing the updated `data/tracker.json` triggers an automatic redeploy on Vercel.
 
+### Scheduling automatic refreshes
+
+`scripts/refresh.bat` wraps the steps above for unattended use: it runs the export, and only
+commits + pushes if `data/tracker.json` actually changed (a no-op run exits cleanly without
+touching git). Output is appended to `scripts/refresh.log` (git-ignored) so you can check what
+happened after the fact.
+
+To schedule it with Windows Task Scheduler:
+
+1. Test it manually first: double-click `scripts/refresh.bat`, then check `scripts/refresh.log`
+   to confirm it found Python/git and either pushed or reported "No changes to commit."
+2. Open Task Scheduler → **Create Task…** (not "Basic Task", so you get the full options).
+3. **General** tab: give it a name, and select "Run whether user is logged on or not" if you want
+   it to work even when locked. This requires your Windows account password to be saved for the task.
+4. **Triggers** tab: **New…** → set the schedule (e.g. daily).
+5. **Actions** tab: **New…** →
+   - Action: *Start a program*
+   - Program/script: `C:\Users\HRampelwa.INNOWIND\source\repos\DataIntegrationCodes\DataOnboarding\scripts\refresh.bat`
+   - Start in: `C:\Users\HRampelwa.INNOWIND\source\repos\DataIntegrationCodes\DataOnboarding\scripts`
+6. Save, then right-click the task → **Run** once to confirm it works under the scheduler
+   (permissions/PATH can differ from an interactive shell), and check `refresh.log` again.
+
+Git push relies on your existing credential manager/cache — if the task runs under a different
+account than you push from normally, it will need its own git credentials configured.
+
 ## Run locally
 
 Any static file server works, e.g.:
