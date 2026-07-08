@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Data Onboarding Tracker</title>
+<link rel="stylesheet" href="assets/css/styles.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%E2%9A%A1</text></svg>" />
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="topbar-title">
+      <span class="logo-mark">⚡</span>
+      <div>
+        <h1>Data Onboarding Tracker</h1>
+        <p class="subtitle">Asset Operations · Nsight onboarding status across the portfolio</p>
+      </div>
+    </div>
+    <div class="topbar-meta">
+      <span id="generatedAt" class="generated-pill"></span>
+      <button id="themeToggle" class="icon-btn" title="Toggle theme" aria-label="Toggle theme">🌙</button>
+    </div>
+  </header>
+
+  <section class="summary-grid" id="summaryGrid"></section>
+
+  <section class="filters">
+    <input id="searchInput" type="search" placeholder="Search project or comments…" />
+    <select id="portfolioFilter"><option value="">All portfolios</option></select>
+    <select id="techFilter"><option value="">All technologies</option></select>
+    <select id="activeFilter">
+      <option value="">Active on Nsight: all</option>
+      <option value="Yes">Active: Yes</option>
+      <option value="No">Active: No</option>
+    </select>
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="cards">Cards</button>
+      <button class="view-btn" data-view="table">Table</button>
+    </div>
+  </section>
+
+  <section id="cardsView" class="cards-grid"></section>
+
+  <section id="tableView" class="table-wrap hidden">
+    <table id="projectsTable">
+      <thead>
+        <tr>
+          <th data-key="portfolio">Portfolio</th>
+          <th data-key="project">Project</th>
+          <th data-key="technology">Technology</th>
+          <th data-key="capacityMW">MW</th>
+          <th data-key="estCOD">Est. COD</th>
+          <th data-key="progression">Onboarding</th>
+          <th data-key="activeOnNsight">Active</th>
+          <th data-key="comments">Comments</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </section>
+
+  <footer class="footer">
+    <p>Source: Data Onboarding Tracker.xlsx (Onboarding Dashboard, Tracker sheets) · Documentation completeness derived from project Technical Information folders.</p>
+  </footer>
+</div>
+
+<div id="detailOverlay" class="overlay hidden">
+  <div class="detail-panel">
+    <button id="closeDetail" class="icon-btn close-btn" aria-label="Close">✕</button>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<script src="assets/js/app.js"></script>
+</body>
+</html>
