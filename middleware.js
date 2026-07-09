@@ -1,3 +1,5 @@
+import { next } from "@vercel/functions";
+
 export default function middleware(request) {
   const validUser = process.env.SITE_USERNAME || "admin";
   const validPass = process.env.SITE_PASSWORD;
@@ -15,7 +17,7 @@ export default function middleware(request) {
     const user = decoded.slice(0, sep);
     const pass = decoded.slice(sep + 1);
     if (user === validUser && pass === validPass) {
-      return;
+      return next();
     }
   }
 
