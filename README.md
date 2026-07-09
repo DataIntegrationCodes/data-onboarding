@@ -65,3 +65,20 @@ Then open the printed URL.
 ## Deploy
 
 This is a zero-config static site — deploy the repo root directly on Vercel (no build command, no output directory override needed).
+
+## Access control
+
+`middleware.js` puts the whole site behind HTTP Basic Auth (the browser's built-in username/password
+prompt) using Vercel Edge Middleware. This only takes effect on Vercel — running the site locally via
+`npx serve` or `python -m http.server` is unprotected, which is expected for local dev.
+
+To enable it:
+
+1. In the Vercel dashboard, open the project → **Settings** → **Environment Variables**.
+2. Add `SITE_PASSWORD` (required) and optionally `SITE_USERNAME` (defaults to `admin` if unset).
+3. Redeploy (or trigger a new deployment by pushing any commit) so middleware picks up the variables.
+4. Visiting the site will now prompt for the username/password before showing any content.
+
+The password is never stored in the repo — only in Vercel's environment variable store. Anyone with
+the credentials can access the whole dashboard; there's no per-user distinction. If you later need
+separate accounts per person, that requires a real auth provider and is a bigger change than this.
