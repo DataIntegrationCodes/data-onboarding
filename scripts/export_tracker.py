@@ -63,6 +63,16 @@ DOC_CATEGORY_KEYWORDS = [
 def jval(v):
     if isinstance(v, datetime.datetime):
         return v.strftime("%Y-%m-%d")
+    if isinstance(v, datetime.date):
+        return v.strftime("%Y-%m-%d")
+    if isinstance(v, datetime.time):
+        # A bare time (usually midnight) here means the source cell is a date
+        # field whose cached value resolved to serial 0 - typically a broken
+        # external workbook link, not a real time-of-day value. Treat as missing
+        # rather than emitting a misleading "00:00".
+        return None
+    if isinstance(v, datetime.timedelta):
+        return str(v)
     return v
 
 
@@ -129,14 +139,20 @@ def main():
     for r in dash_rows:
         name = (r.get("Project") or "").strip()
         code = CODE_BY_NAME.get(name, name[:4].upper())
+        raw_est_cod = r.get("Est. COD")
+        days_till_cod = jval(r.get("Days till COD")) if r.get("Days till COD") != "#VALUE!" else None
+        if isinstance(raw_est_cod, datetime.time):
+            # Est. COD is broken (see jval), so any formula derived from it
+            # (e.g. "=EST_COD - TODAY()") is garbage too - don't surface it.
+            days_till_cod = None
         projects.append({
             "code": code,
             "portfolio": r.get("Portfolio"),
             "project": name,
             "technology": r.get("Technology"),
             "capacityMW": r.get("Capacity (MW)"),
-            "estCOD": jval(r.get("Est. COD")),
-            "daysTillCOD": jval(r.get("Days till COD")) if r.get("Days till COD") != "#VALUE!" else None,
+            "estCOD": jval(raw_est_cod),
+            "daysTillCOD": days_till_cod,
             "progression": r.get("Onboarding progression"),
             "interconnectivity": r.get("Interconnectivity \n(RDL & Manu)"),
             "tagReview": r.get("Tag + Breaking \nlist review"),
